@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Illustre</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
-    <title>Usuario</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="../fonts/imagenes/favicon.ico" type="imagen.ico">
+
 </head>
 <body>
     <header class="header">
@@ -14,29 +20,30 @@
           <img class="header__logo" src="../fonts/Imagenes/ILLUSTRE.png" /*src="../fonts/Imagenes/illustre.png"*/ alt="Logotipo">
         </a>
         
-        <div class="lema2">BELLES HISTOIRIES</div>
+        <div class="lema2">BELLES HISTOIRES</div>
+  
+      
         <div class="header-right">
        
-          <div class="language-selector">
-            <select id="language-select">
-                <option selected disabled>Idioma</option>
-                <option value="es">Español</option>
-                <option value="eu">Euskara</option>
-                <option value="en">English</option>
-                <option value="fr">Français</option>
-            </select>
-          </div>
+            <div class="language-selector">
+                <select id="language-select">
+                    <option selected disabled>Idioma</option>
+                    <option value="es">Español</option>
+                    <option value="eu">Euskara</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                </select>
+            </div>            
       
           <div class="icons">
-            <button id="loginButton" href="/login" class="icon"><i class="fas fa-user"></i></button>
-            <div id="loginPopup" class="popup">
+            <button id="loginButton" type="button" class="icon"><i class="fas fa-user"></i></button>
+            <div id="loginPopup" class="loginpopup">
                 <div class="popup-content">
                   <span id ="loginClose" class="close">&times;</span>
                   <h2>Login</h2>
                   <form id="loginForm">
                     <label for="username">User</label>
                     <input type="text" id="username" name="username" required>
-                    
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required>
                     <button id ="ojito" ><img id ="imagen" src="../fonts/Imagenes/ojoCerrado1.jpg" /></button>
@@ -45,30 +52,138 @@
                 </div>
               </div>
             <button id="cartButton" href="/store" class="icon"><i class="fas fa-shopping-cart"></i></button>
-            <div id="cartPopup" class="popup">
-                <div class="popup-content">
+            <div id="cartPopup" class="cartpopup">
+                <div class="popup-contentcart">
                     <span id="cartClose" class="close">&times;</span>
                     <h2>Cart</h2>
                     <ul id="cartItems"></ul>
+                    <div class="counter-controls">
+                        <button id="decrement1" class="counter-button decrement">-</button>
+                        <span id="counter1" class="counter-display">0</span>
+                        <button id="increment1" class="counter-button increment">+</button>
+                      </div>
                     <div class="total">
                         <p>Total: <span id="totalPrice">0€</span></p>
                     </div>
                 </div>
             </div>
-          </div>
+        </div>
       </header>
-        <nav class="navegacion">
-          <a class="navegacion__enlace" href="home.html" data-translate="titulo-nav">Inicio</a>
-          <a class="navegacion__enlace" href="index.html" data-translate="store-titulo">Tienda</a>
-          <a class="navegacion__enlace " href="#" data-translate="historial">Historial de pedidos</a>
-          <a class="navegacion__enlace " href="contacto.html" data-translate="contacto">Contacto</a>
-        </nav>
+    <nav class="navegacion">
+        <a class="navegacion__enlace" href="home.html" data-translate="titulo-nav">Inicio</a>
+        <a class="navegacion__enlace navegacion__enlace--activo" href="index.html" data-translate="store-titulo">Tienda</a>
+        <a class="navegacion__enlace " href="contacto.html" data-translate="contacto">Contacto</a>
+    </nav> 
+
+        <main class="contenedor">
+          <div id="dateTimeDisplay">Cargando...</div>
+       
+        
 
 
-    <main class="contenedor">
-        </main>
-    <div id="dateTimeDisplay">Cargando...</div>
+  <div class="container">
+   
+   <!--imagen usuario-->
+    <div class="profile">
+      <h2>Mi Cuenta</h2>
+         <img id="profile-picture" src="../fonts/Imagenes/user.jpeg" alt="Foto de perfil">
+            <h2>Nombre usuario</h2>
+            <input type="file" id="upload-photo" accept="image/*">
+        <button id="save-photo" class="button">Guardar Foto</button>
+     </div>
+     <!--datos de ususario-->     
+    <section class="section personal-info">
+       <h3>Datos Personales</h3>
+         <form id="edit-form">
+              <label for="name">Nombre:</label>
+              <input type="text" id="name" name="name" value="" required><br>
+          
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" value="" required><br>
+          
+              <label for="phone">Teléfono:</label>
+              <input type="tel" id="phone" name="phone" value="" required><br>
+          
+          <button type="submit" class="button">Guardar Cambios</button>
+       </form>
+    </section>
+       <!--cambio contraseña-->   
+    <section class="section change-password">
+       <h3>Cambiar Contraseña</h3>
+          <form id="password-form">
+              <label for="current-password">Contraseña Actual:</label>
+              <input type="password" id="current-password" name="current-password" required autocomplete="current-password"><br>
+          
+              <label for="new-password">Nueva Contraseña:</label>
+              <input type="password" id="new-password" name="new-password" required autocomplete="new-password"><br>
+          
+              <label for="confirm-password">Confirmar Contraseña:</label>
+              <input type="password" id="confirm-password" name="confirm-password" required autocomplete="new-password"><br>
+          
+            <button type="submit" class="button">Actualizar Contraseña</button>
+         </form>
+     </section>
+        <!--historial de pedidos-->
+     <section class="section orders">
+      <h3>Historial de Pedidos</h3>
+            <ul>
+              <li class="order">
+                <div class="order-summary">
+                  <strong>Pedido #12345</strong>
+                  <p>Fecha: 12/01/2025</p>
+                  <p>Estado: Pendiente</p>
+                  <button class="toggle-details">Ver detalles</button>
+                </div>
+                <div class="order-details" style="display: none;">
+                  <p><strong>Producto:</strong> Pendientes Palmier</p>
+                  <p><strong>Cantidad:</strong> 2</p>
+                  <p><strong>Total:</strong> 24€</p>
+                </div>
+              </li>
+            </ul>
 
+            <ul>
+              <li class="order">
+                <div class="order-summary">
+                  <strong>Pedido #12344</strong>
+                  <p>Fecha: 22/12/2024</p>
+                  <p>Estado: Entregado</p>
+                  <button class="toggle-details">Ver detalles</button>
+                </div>
+                <div class="order-details" style="display: none;">
+                  <p><strong>Producto:</strong> Collar Tusy perlas</p>
+                  <p><strong>Cantidad:</strong> 2</p>
+                  <p><strong>Total:</strong> 24€</p>
+                </div>
+              </li>
+            </ul>
+
+            <ul>
+              <li class="order">
+                <div class="order-summary">
+                  <strong>Pedido #12343</strong>
+                  <p>Fecha: 20/11/2024</p>
+                  <p>Estado: Entregado</p>
+                  <button class="toggle-details">Ver detalles</button>
+                </div>
+                <div class="order-details" style="display: none;">
+                  <p><strong>Producto:</strong> Pendientes Baldosas Bilbao</p>
+                  <p><strong>Cantidad:</strong> 3</p>
+                  <p><strong>Total:</strong> 36€</p>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+      <!--boton cerrar sesion-->   
+    <section class="section options">
+      <h3>Opciones</h3>
+        <button id="logout-button" class="button logout">Cerrar sesión</button>
+   </section>
+   </div>
+  </main>
+
+ <!--footer-->
     <footer class="footer">
         <div class="footer__contenedor">
             <div class="footer__seccion">
@@ -84,16 +199,20 @@
             </div>
             <div class="footer__seccion">
                 <h3 class="footer__titulo">Contacto</h3>
-                <p class="footer__texto"><i class="fas fa-phone"></i> +1 234 567 890</p>
-                <p class="footer__texto"><i class="fas fa-envelope"></i> info@frontendstore.com</p>
+                <p class="footer__texto"><i class="fas fa-phone"></i> +34 634 567 890</p>
+                <p class="footer__texto"><i class="fas fa-envelope"></i> info@quintessence.com</p>
             </div>
             <div class="footer__seccion">
                 <h3 class="footer__titulo">Dirección</h3>
-                <p class="footer__texto"><i class="fas fa-map-marker-alt"></i> 123 Calle Principal, Ciudad, País</p>
+                <p class="footer__texto"><i class="fas fa-map-marker-alt"></i>c/ Serrano 76 Madrid España</p>
             </div>
         </div>
         <p class="footer__derechos" data-translate="derechos">Todos los derechos Reservados © 2025</p>
     </footer>
+    <button class="scroll-top-btn" id="scrollTopBtn">
+      <i class="fas fa-chevron-up"></i>
+    </button>
+    <script src="../js/flecha.js"></script>
    <script src="../js/script.js"></script>
 </body>
 </html>
