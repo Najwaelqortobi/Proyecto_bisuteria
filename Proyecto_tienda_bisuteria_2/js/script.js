@@ -1,249 +1,350 @@
 let globalTranslations;
 
 async function loadTranslations() {
-    const response = await fetch('translations.json');
-    if (!response.ok) {
-        throw new Error('Error al cargar las traducciones');
-    }
-    globalTranslations = await response.json();
-    return globalTranslations;
+  const response = await fetch("translations.json");
+  if (!response.ok) {
+    throw new Error("Error al cargar las traducciones");
+  }
+  globalTranslations = await response.json();
+  return globalTranslations;
 }
 
 //script date
 function updateDateTime() {
-    const dateTimeDisplay = document.getElementById("dateTimeDisplay");
-    const now = new Date();
+  const dateTimeDisplay = document.getElementById("dateTimeDisplay");
+  const now = new Date();
 
-    const currentLanguage = localStorage.getItem('language') || 'es';
-    const { daysOfWeek, monthsOfYear } = globalTranslations[currentLanguage];
+  const currentLanguage = localStorage.getItem("language") || "es";
+  const { daysOfWeek, monthsOfYear } = globalTranslations[currentLanguage];
 
-    const day = daysOfWeek[now.getDay()];
-    const date = now.getDate(); 
-    const month = monthsOfYear[now.getMonth()];
-    const year = now.getFullYear();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
+  const day = daysOfWeek[now.getDay()];
+  const date = now.getDate();
+  const month = monthsOfYear[now.getMonth()];
+  const year = now.getFullYear();
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
 
-    dateTimeDisplay.textContent = `${day}, ${hours}:${minutes} - ${date} ${month} ${year}`;
+  dateTimeDisplay.textContent = `${day}, ${hours}:${minutes} - ${date} ${month} ${year}`;
 }
 
+
+//traduc
 function updateTranslations(selectedLanguage) {
   for (const key in globalTranslations[selectedLanguage]) {
-      const elements = document.querySelectorAll(`[data-translate="${key}"]`);
-      elements.forEach(element => {
-          if (element.tagName === 'INPUT') {
-              if (element.type === 'submit') {
-                  element.value = globalTranslations[selectedLanguage][key];
-              } else {
-                  element.placeholder = globalTranslations[selectedLanguage][key];
-              }
-          } else {
-              element.textContent = globalTranslations[selectedLanguage][key];
+    const elements = document.querySelectorAll(`[data-translate="${key}"]`);
+    elements.forEach((element) => {
+      if (element.tagName === "INPUT") {
+        if (element.type === "submit") {
+          element.value = globalTranslations[selectedLanguage][key];
+        } else if (element.type === "checkbox") {
+          const label = element.closest('label');
+          if (label) {
+            const textNode = Array.from(label.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+            if (textNode) {
+              textNode.nodeValue = ' ' + globalTranslations[selectedLanguage][key];
+            }
           }
-      });
+        } else {
+          element.placeholder = globalTranslations[selectedLanguage][key];
+        }
+      } else {
+        element.textContent = globalTranslations[selectedLanguage][key];
+      }
+    });
   }
   updateDateTime();
 }
 
-
-loadTranslations().then(() => {
+loadTranslations()
+  .then(() => {
     updateDateTime();
     setInterval(updateDateTime, 60000);
 
-    document.getElementById('language-select').addEventListener('change', function() {
+    document
+      .getElementById("language-select")
+      .addEventListener("change", function () {
         const selectedLanguage = this.value;
-        localStorage.setItem('language', selectedLanguage);
+        localStorage.setItem("language", selectedLanguage);
         updateTranslations(selectedLanguage);
-    });
+      });
 
     // Aplicar traducciones iniciales
-    const initialLanguage = localStorage.getItem('language') || 'es';
+    const initialLanguage = localStorage.getItem("language") || "es";
     updateTranslations(initialLanguage);
-}).catch(error => {
+  })
+  .catch((error) => {
     console.error(error);
-});
-
+  });
 
 //script Administrador Inicio//admin
-document.addEventListener('DOMContentLoaded', function() {
-  const monthSelect = document.getElementById('monthSelect');
-  const dashboards = document.querySelectorAll('.dashboard');
+document.addEventListener("DOMContentLoaded", function () {
+  const monthSelect = document.getElementById("monthSelect");
+  const dashboards = document.querySelectorAll(".dashboard");
 
-  monthSelect.addEventListener('change', function() {
-      const selectedMonth = this.value;
-      
-      if (selectedMonth === 'todos') { 
-          dashboards.forEach(dashboard => {
-              dashboard.style.display = 'block';
-          });
-      } else {
-          dashboards.forEach(dashboard => {
-              if (dashboard.id === `dashboard-${selectedMonth}`) {
-                  dashboard.style.display = 'block';
-              } else {
-                  dashboard.style.display = 'none';
-              }
-          });
-      }
+  monthSelect.addEventListener("change", function () {
+    const selectedMonth = this.value;
+
+    if (selectedMonth === "todos") {
+      dashboards.forEach((dashboard) => {
+        dashboard.style.display = "block";
+      });
+    } else {
+      dashboards.forEach((dashboard) => {
+        if (dashboard.id === `dashboard-${selectedMonth}`) {
+          dashboard.style.display = "block";
+        } else {
+          dashboard.style.display = "none";
+        }
+      });
+    }
   });
 });
 
 //script Administrador Fin//admin
-//Script Index por detalle producto inicio 
+//Script Index por detalle producto inicio
 
-document.addEventListener('DOMContentLoaded', function() {
-const productos = document.querySelectorAll('.producto');
-productos.forEach(element => {
-element.addEventListener('click', function(e) {
-    if (e.target.tagName === 'IMG') { 
+document.addEventListener("DOMContentLoaded", function () {
+  const productos = document.querySelectorAll(".producto");
+  productos.forEach((element) => {
+    element.addEventListener("click", function (e) {
+      if (e.target.tagName === "IMG") {
         // <!--e.target Verifica si el elemento clicado (e.target) es una imagen.-->
-          // tagname para devolver el nbr del etiqueta en mayuscula que es mas practico en javascript 
-        const productoId = this.getAttribute('data-id');
-        const colorSeleccionado = this.querySelector('select').value;
-        const descripcion = this.querySelector('p').textContent;
-        const titulo = this.querySelector('.producto_contenido').textContent;
-        window.location.href = `producto.html?id=${productoId}&color=${colorSeleccionado}&descripcion=${encodeURIComponent(descripcion)}&titulo=${encodeURIComponent(titulo)}`;
-    }
-   
-    // La propiedad window.location.href en JavaScript se utiliza para obtener o establecer la URL actual de la página web. 
-    //la siguiente parte de esta linea nos muestra como sera la url el id sera el id del producto que es   const productoId = this.getAttribute('data-id');
-    //y el color sera la varibale colorSeleccionado y encodeURIComponent es un codigo que se pone en la url ..........
-});
-});
-});
+        // tagname para devolver el nbr del etiqueta en mayuscula que es mas practico en javascript
+        const productoId = this.getAttribute("data-id");
+        const colorSeleccionado = this.querySelector("select").value;
+        const descripcion = this.querySelector("p").textContent;
+        const titulo = this.querySelector(".producto_contenido").textContent;
+        window.location.href = `producto.html?id=${productoId}&color=${colorSeleccionado}&descripcion=${encodeURIComponent(
+          descripcion
+        )}&titulo=${encodeURIComponent(titulo)}`;
+      }
 
-
-//Script Index por detalle producto fin 
-
-//Script producto por detalle producto inicio 
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const productoId = urlParams.get('id');
-    const colorSeleccionado = urlParams.get('color');
-
-    fetch('./productos.json')
-        .then(response => response.json())
-        .then(data => {
-            console.log('Datos cargados:', data); // Para depuración
-            const producto = data.productos.find(p => p.id == productoId);
-            if (producto) {
-                mostrarProducto(producto, colorSeleccionado);
-            } else {
-                console.error('Producto no encontrado');
-            }
-        })
-        .catch(error => console.error('Error:', error));
+      // La propiedad window.location.href en JavaScript se utiliza para obtener o establecer la URL actual de la página web.
+      //la siguiente parte de esta linea nos muestra como sera la url el id sera el id del producto que es   const productoId = this.getAttribute('data-id');
+      //y el color sera la varibale colorSeleccionado y encodeURIComponent es un codigo que se pone en la url ..........
+    });
+  });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-const urlParams = new URLSearchParams(window.location.search);
-const productoId = urlParams.get('id');
+//Script Index por detalle producto fin
 
-if (!productoId) {
-console.error('No se encontró el ID del producto en la URL.');
-return;
-}
+//Script producto por detalle producto inicio
+document.addEventListener("DOMContentLoaded", function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const productoId = urlParams.get("id");
+  const colorSeleccionado = urlParams.get("color");
 
-// Carga el archivo JSON
-fetch('productos.json')
-.then(response => response.json())
-.then(data => {
-    const producto = data.productos.find(p => p.id === productoId);
-    if (producto) {
+  fetch("./productos.json")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Datos cargados:", data); // Para depuración
+      const producto = data.productos.find((p) => p.id == productoId);
+      if (producto) {
+        mostrarProducto(producto, colorSeleccionado);
+      } else {
+        console.error("Producto no encontrado");
+      }
+    })
+    .catch((error) => console.error("Error:", error));
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const productoId = urlParams.get("id");
+
+  if (!productoId) {
+    console.error("No se encontró el ID del producto en la URL.");
+    return;
+  }
+
+  // Carga el archivo JSON
+  fetch("productos.json")
+    .then((response) => response.json())
+    .then((data) => {
+      const producto = data.productos.find((p) => p.id === productoId);
+      if (producto) {
         mostrarProducto(producto);
-    } else {
-        console.error('Producto no encontrado en el JSON.');
-    }
-})
-.catch(error => console.error('Error al cargar el JSON:', error));
+      } else {
+        console.error("Producto no encontrado en el JSON.");
+      }
+    })
+    .catch((error) => console.error("Error al cargar el JSON:", error));
 });
 
 function mostrarProducto(producto) {
-const detalleProducto = document.querySelector('.detalle-producto');
+  const detalleProducto = document.querySelector(".detalle-producto");
 
-// Configurar los datos del producto
-detalleProducto.querySelector('.producto__imagen').src = producto.imagen;
-detalleProducto.querySelector('.producto__imagen').alt = producto.titulo;
-detalleProducto.querySelector('.producto__nombre').textContent = producto.titulo;
-detalleProducto.querySelector('.producto_contenido').textContent = producto.descripcion;
-detalleProducto.querySelector('.producto__precio').textContent = producto.precio;
+  // Configurar los datos del producto
+  detalleProducto.querySelector(".producto__imagen").src = producto.imagen;
+  detalleProducto.querySelector(".producto__imagen").alt = producto.titulo;
+  detalleProducto.querySelector(".producto__nombre").textContent =
+    producto.titulo;
+  detalleProducto.querySelector(".producto_contenido").textContent =
+    producto.descripcion;
+  detalleProducto.querySelector(".producto__precio").textContent =
+    producto.precio;
 
-// Configurar los colores
-const selectColores = detalleProducto.querySelector('.formulariocampo');
-producto.colores.forEach(color => {
-const option = document.createElement('option');
-option.value = color;
-option.textContent = color;
-selectColores.appendChild(option);
-});
+  // Configurar los colores
+  const selectColores = detalleProducto.querySelector(".formulariocampo");
+  selectColores.innerHTML = '';
+  producto.colores.forEach((color) => {
+    const option = document.createElement("option");
+    option.value = color;
+    option.textContent = color;
+    selectColores.appendChild(option);
+  });
 }
-//Script producto por detalle producto fin 
 
+
+//Script producto por detalle producto fin
 
 //Página de productos
-document.addEventListener('DOMContentLoaded', function() {
-    // Seleccionamos todos los enlaces de productos
-    const productos = document.querySelectorAll('.producto a');
+document.addEventListener("DOMContentLoaded", function () {
+  // Seleccionamos todos los enlaces de productos
+  const productos = document.querySelectorAll(".producto a");
 
-    productos.forEach(producto => {
-        producto.addEventListener('click', function(event) {
-            // Prevenir la acción por defecto del enlace
-            event.preventDefault();
+  productos.forEach((producto) => {
+    producto.addEventListener("click", function (event) {
+      // Prevenir la acción por defecto del enlace
+      event.preventDefault();
 
-            // Obtener la información del producto del atributo 'data-*'
-            const imagen = producto.getAttribute('data-imagen');
-            const nombre = producto.getAttribute('data-nombre');
-            const precio = producto.getAttribute('data-precio');
+      // Obtener la información del producto del atributo 'data-*'
+      const imagen = producto.getAttribute("data-imagen");
+      const nombre = producto.getAttribute("data-nombre");
+      const precio = producto.getAttribute("data-precio");
 
-            // Almacenar los datos en el localStorage
-            localStorage.setItem('producto_imagen', imagen);
-            localStorage.setItem('producto_nombre', nombre);
-            localStorage.setItem('producto_precio', precio);
+      // Almacenar los datos en el localStorage
+      localStorage.setItem("producto_imagen", imagen);
+      localStorage.setItem("producto_nombre", nombre);
+      localStorage.setItem("producto_precio", precio);
 
-            // Redirigir a la página de producto
-            window.location.href = 'producto.html';
-        });
+      // Redirigir a la página de producto
+      window.location.href = "producto.html";
     });
+  });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Recuperar los datos del localStorage
-    const imagen = localStorage.getItem('producto_imagen');
-    const nombre = localStorage.getItem('producto_nombre');
-    const precio = localStorage.getItem('producto_precio');
+document.addEventListener("DOMContentLoaded", function () {
+  // Recuperar los datos del localStorage
+  const imagen = localStorage.getItem("producto_imagen");
+  const nombre = localStorage.getItem("producto_nombre");
+  const precio = localStorage.getItem("producto_precio");
 
-    // Verificar si los datos existen y actualizarlos en la página
-    if (imagen && nombre && precio) {
-        // Actualizar el contenido de la página con los datos recuperados
-        document.getElementById('producto_imagen').src = imagen;
-        document.getElementById('producto_nombre').textContent = nombre;
-        document.getElementById('producto_descripcion').textContent = `Este es el producto ${nombre}. Precio: ${precio}`;
+  // Verificar si los datos existen y actualizarlos en la página
+  if (imagen && nombre && precio) {
+    // Actualizar el contenido de la página con los datos recuperados
+    document.getElementById("producto_imagen").src = imagen;
+    document.getElementById("producto_nombre").textContent = nombre;
+    document.getElementById(
+      "producto_descripcion"
+    ).textContent = `Este es el producto ${nombre}. Precio: ${precio}`;
+  }
+});
+
+// Función para agregar productos al carrito
+function agregarCarritoProducto(producto) {
+
+  // Busca si el producto ya existe en el carrito
+  const existingItem = cart.find(item => item.nombre === producto.nombre && item.color === producto.color);
+  
+  // Si el producto ya existe, incrementa su cantidad
+  if (existingItem) {
+    existingItem.cantidad += producto.cantidad;
+  }
+  // Si no existe, lo agrega al carrito
+  else {
+    cart.push(producto);
+  }
+  guardarCarrito();
+  actualizarCartPopupProducto();
+}
+
+// Función para actualizar la visualización del carrito
+function actualizarCartPopupProducto() {
+
+  // Limpia los items actuales del carrito
+  cartItems.innerHTML = "";
+  let total = 0; // Variable para calcular el precio total
+  
+  // Recorre cada producto en el carrito
+  cart.forEach((item, index) => {
+
+    // Crear un nuevo elemento como lista por cada producto
+    const li = document.createElement("li");
+
+    //  Texto del elemento con los detalles del producto
+
+    li.style.fontSize = "16px"; // Ajusta el número según el tamaño deseado
+    li.textContent = `${item.nombre} - ${item.color} - Cantidad: ${item.cantidad} - Precio: ${item.precio * item.cantidad}€`;
+
+    // Se crea un botón de "Eliminar" para este producto
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "X";
+    deleteButton.style.marginLeft = "10px"; // Espaciado para que quede bien visualmente
+    
+    // Agrega un evento al botón para eliminar este producto
+    deleteButton.addEventListener("click", () => {
+      eliminarProducto(index); // Llama a la función para eliminar este producto por su índice
+    });
+    
+    // Agrega el botón al elemento de lista
+    li.appendChild(deleteButton);
+    
+    // Agrega el elemento al contenedor de items
+    cartItems.appendChild(li);
+    // Calcula el precio total
+    total += item.precio * item.cantidad;
+  });
+  
+  // Actualiza el precio total mostrado
+  totalPrice.textContent = `${total}€`;
+
+  // Actualiza el contador de items del carrito
+  counter1Value = cart.reduce((sum, item) => sum + item.cantidad, 0);
+  counter1Display.textContent = counter1Value;
+}
+
+document.querySelectorAll('.formulario__submit').forEach(button => {
+  button.addEventListener('click', (e) => {
+    const producto = e.target.closest('.detalle-producto'); // Encuentra el contenedor del producto
+    // Capturar la informacion del producto
+    const nombre = producto.querySelector('.producto__nombre').textContent; 
+    const precio = parseFloat(producto.querySelector('.producto__precio').textContent);
+    const color = producto.querySelector('.formulariocampo').value;
+    const cantidad = parseInt(producto.querySelector('.cantidadScript').value);
+    
+    // Valida que el producto tenga collor y cantidad válidos
+    if (color === '-- Seleccionar Color --' || isNaN(cantidad) || cantidad <= 0) {
+      alert('Por favor, selecciona un color y una cantidad válida.'); //Alerta si la validación falla
+      return;
     }
+    
+    cartPopup.style.display = "block";
+    agregarCarritoProducto({nombre, precio, color, cantidad}); // Agregar el producto al carrito
+
+  });
 });
 
-
-//NAHIA SCRIPT
 // SCRIPT LOGIN //
+const userInfo = document.getElementById("user-info");
+const usernameButton = document.getElementById("username-button");
 const loginButton = document.getElementById('loginButton');
 const loginPopup = document.getElementById('loginPopup');
 const closePopup = document.getElementById('loginClose');
 const ojito = document.getElementById('ojito');
-const imagen = document.getElementById('imagen');
 const password = document.getElementById('password');
-
-//aqui comenzamos a manejar el evento del popup del login
+//este script maneja elmevento del popup, para que cuando hagamos click aparezca.
 loginButton.addEventListener('click', () => {
     loginPopup.style.display = 'block';
 });
 
-closePopup.addEventListener('click', () => {
-    loginPopup.style.display = 'none';
+closePopup.addEventListener("click", () => {
+  loginPopup.style.display = "none";
 });
-
-//esto es para el evento del ojo y el propio password, para que se pueda ver la contraseña
+//este en cambio es para el boton de ojo, cambia el estado del password a texto normal.
 ojito.addEventListener('click', function(event) {
-  //evita que el boton de ojo se comporte por defecto como un envio de formulario
-  event.preventDefault(); 
+  event.preventDefault();
+
     if (password.type === "password") {
         password.type = "text";
         imagen.src = "../fonts/Imagenes/ojoAbierto1.jpg";
@@ -258,12 +359,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", function (event) {
-      // esto evita que el formulario se envíe de forma predeterminada
-      event.preventDefault();
+      event.preventDefault(); //tenemos que quitar el evento que tiene el DOM por defecto al enviar un formulario.
 
       const username = document.getElementById("username").value;
       const passwordValue = document.getElementById("password").value;
- //recogemos los datos puestos en el form del login, esto es lo que enviaremos al localStorage
+ //recogemos los datos puestos en el form del login en una variable, esto es lo que enviaremos al localStorage.
       const userData = {
         username: username,
         password: passwordValue,
@@ -272,7 +372,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (username === "nahia" && passwordValue === "Nahia") {
           userData.isAdmin = true;  // Marcar al usuario como administrador
       }
-   
   //guardamos el userData dentro del localStorage
       localStorage.setItem("userData", JSON.stringify(userData));
 //si el login es admin redirigir a la pagina respectiva
@@ -286,9 +385,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-//aqui manejamos el icono y el boton del usuario, cambiando de uno a otro cuando logeamos
+  //aqui manejamos el icono y el boton del usuario, cambiando de uno a otro cuando logeamos
   // Verificar el estado del usuario para mostrar login o nombre de usuario
-  const loginButton = document.getElementById("loginButton");
   const usernameButton = document.getElementById("usernameButton");
   const userInfo = document.getElementById("userInfo");
 
@@ -298,6 +396,7 @@ document.addEventListener("DOMContentLoaded", () => {
  //Se comprueba si existe el objeto userData y si tiene una propiedad username. Esto indica que el usuario está logeado y tiene un nombre de usuario registrado.
   if (userData && userData.username) {
     // Si el usuario está logueado, muestra el nombre de usuario y quita el icon de login.
+    //verificamos que las tres cosas existen en el DOM y despues se cambia al boton de usuario con la info de localStorage.
     if (loginButton && userInfo && usernameButton) {
       loginButton.style.display = "none";
       userInfo.style.display = "block";
@@ -323,7 +422,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (usernameDisplay && userData) {
       // Mostrar el nombre de usuario
-      usernameDisplay.textContent = userData.username || "Usuario no registrado";
+      usernameDisplay.textContent =
+        userData.username || "Usuario no registrado";
       passwordDisplay.value = userData.password || "";
     }
   }
@@ -332,21 +432,26 @@ document.addEventListener("DOMContentLoaded", () => {
 //aqui manejamos la seccion del historial de pedidos
 document.addEventListener("DOMContentLoaded", () => {
   // Seleccionamos todos los botones de "Ver detalles"
-  const toggleDetailsButtons = document.querySelectorAll('.toggle-details');
+  const toggleDetailsButtons = document.querySelectorAll(".toggle-details");
 
   // Añadimos el evento de clic a cada botón
-  toggleDetailsButtons.forEach(button => {
-    button.addEventListener('click', () => {
+  toggleDetailsButtons.forEach((button) => {
+    button.addEventListener("click", () => {
       // primero buscamos el contenedor de order y una vez lo tenemos, buscamos el primer hijo llamado order details y lo guardamos
-      const orderDetails = button.closest('.order').querySelector('.order-details');
+      const orderDetails = button
+        .closest(".order")
+        .querySelector(".order-details");
 
       // Alterna la visibilidad del contenedor de detalles
-      if (orderDetails.style.display === 'none' || orderDetails.style.display === '') {
-        orderDetails.style.display = 'block'; // Mostrar los detalles
-        button.textContent = 'Ocultar detalles'; // Cambiar texto del botón
+      if (
+        orderDetails.style.display === "none" ||
+        orderDetails.style.display === ""
+      ) {
+        orderDetails.style.display = "block"; // Mostrar los detalles
+        button.textContent = "Ocultar detalles"; // Cambiar texto del botón
       } else {
-        orderDetails.style.display = 'none'; // Ocultar los detalles
-        button.textContent = 'Ver detalles'; // Cambiar texto del botón
+        orderDetails.style.display = "none"; // Ocultar los detalles
+        button.textContent = "Ver detalles"; // Cambiar texto del botón
       }
     });
   });
@@ -367,106 +472,182 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
- //POPUP CARRITO//
-const cartButton = document.getElementById('cartButton');
-const cartPopup = document.getElementById('cartPopup');
-const cartClose = document.getElementById('cartClose');
+//POPUP CARRITO//
+const cartButton = document.getElementById("cartButton");
+const cartPopup = document.getElementById("cartPopup");
+const cartClose = document.getElementById("cartClose");
 const counter1Display = document.getElementById("counter1");
 let counter1Value = 0;
 
-cartButton.addEventListener('click', () => {
-    cartPopup.style.display = 'block';
+cartButton.addEventListener("click", () => {
+  cartPopup.style.display = "block";
 });
-
 
 cartClose.addEventListener('click', () => {
     cartPopup.style.display = 'none';
 });
 
-document.getElementById("increment1").addEventListener("click", () => {
-    counter1Value++;
-    counter1Display.textContent = counter1Value;
-  });
   
-  document.getElementById("decrement1").addEventListener("click", () => {
-    if (counter1Value > 0) {
-      counter1Value--;
-      counter1Display.textContent = counter1Value;
-    }
-  });
 
-  
-  //SCRIPT POPUP REBAJAS
+// AGREGANDO PRODUCTOS AL CARRITO
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const popupRebajas = document.getElementById("popupRebajas");
-    const closePopup = document.getElementById("rebajasclose");
+// Selecciona los elementos del DOM necesarios para manejar el carrito
+const cartItems = document.getElementById("cartItems"); // Contenedor de items del carrito
 
-    // Mostrar el popup al cargar la página
-    popupRebajas.classList.add("visible");
-    
-    // Cerrar el popup cuando se haga clic en la X
-    closePopup.addEventListener("click", () => {
-        popupRebajas.classList.remove("visible");
-    });
+const totalPrice = document.getElementById("totalPrice"); // Elemento para mostrar precio total
+let cart = [];
+
+// Función para guardar el carrito en localStorage
+function guardarCarrito() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// Función para cargar el carrito desde localStorage
+function cargarCarrito() {
+  const savedCart = localStorage.getItem('cart');
+  if (savedCart) {
+      cart = JSON.parse(savedCart);
+  }
+}
+
+// Llama a esta función al inicio de tu script
+cargarCarrito();
+
+// Función para agregar productos al carrito
+document.addEventListener('DOMContentLoaded', function() {
+  cargarCarrito();
+  actualizarCartPopup(); // O actualizarCartPopupProducto(), según corresponda
 });
 
-  //SCRIPT NAVEGACION
-  document.addEventListener("DOMContentLoaded", () => {
-    const navegacion = document.querySelector(".navegacion");
-    const header = document.querySelector("header"); 
+function agregarCarrito(producto) {
 
+  // Busca si el producto ya existe en el carrito
+  const existingItem = cart.find(item => item.nombre === producto.nombre && item.color === producto.color);
+  
+  // Si el producto ya existe, incrementa su cantidad
+  if (existingItem) {
+    existingItem.cantidad += producto.cantidad;
+  }
+  // Si no existe, lo agrega al carrito
+  else {
+    cart.push(producto);
+  }
+  guardarCarrito(); 
+  actualizarCartPopup();
+}
 
-    window.addEventListener("scroll", () => {
-        if (window.scrollY >= header.offsetHeight) {
-            // Si se ha desplazado más allá del header, fija la navegación
-            navegacion.classList.add("fija");
-        } else {
-            // Si está antes del header, posición inicial
-            navegacion.classList.remove("fija");
-        }
+// Función para actualizar la visualización del carrito
+function actualizarCartPopup() {
+
+  // Limpia los items actuales del carrito
+  cartItems.innerHTML = "";
+  let total = 0; // Variable para calcular el precio total
+  
+  // Recorre cada producto en el carrito
+  cart.forEach((item, index) => {
+
+    // Crear un nuevo elemento como lista por cada producto
+    const li = document.createElement("li");
+
+    //  Texto del elemento con los detalles del producto
+    li.style.fontSize = "16px"; // Ajusta el número según el tamaño deseado
+    li.textContent = `${item.nombre} - ${item.color} - Cantidad: ${item.cantidad} - Precio: ${item.precio * item.cantidad}€`;
+    
+    // Se crea un botón de "Eliminar" para este producto
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "X";
+    deleteButton.style.marginLeft = "10px"; // Espaciado para que quede bien visualmente
+    
+    // Agrega un evento al botón para eliminar este producto
+    deleteButton.addEventListener("click", () => {
+      eliminarProducto(index); // Llama a la función para eliminar este producto por su índice
     });
+    
+    // Agrega el botón al elemento de lista
+    li.appendChild(deleteButton);
+    
+    // Agrega el elemento al contenedor de items
+    cartItems.appendChild(li);
+    // Calcula el precio total
+    total += item.precio * item.cantidad;
+  });
+  
+  // Actualiza el precio total mostrado
+  totalPrice.textContent = `${total}€`;
+
+  // Actualiza el contador de items del carrito
+  counter1Value = cart.reduce((sum, item) => sum + item.cantidad, 0);
+  counter1Display.textContent = counter1Value;
+}
+
+// Función para eliminar un producto del carrito por su índice
+function eliminarProducto(index) {
+  cart.splice(index, 1); // Elimina el producto del array `cart` en la posición `index`
+  guardarCarrito();
+  actualizarCartPopup(); // Actualiza la visualización del carrito después de eliminarlo
+}
+
+// Agrega evento de clic a todos los botones de "Agregar al Carrito"
+document.querySelectorAll('.producto_submit').forEach(button => {
+  button.addEventListener('click', (e) => {
+    const producto = e.target.closest('.producto'); // Encuentra el contenedor del producto
+    // Capturar la informacion del producto
+    const nombre = producto.querySelector('.producto__nombre').textContent; 
+    const precio = parseFloat(producto.querySelector('.producto__precio').textContent);
+    const color = producto.querySelector('.producto_color').value;
+    const cantidad = parseInt(producto.querySelector('.producto_cantidad').value);
+    
+    // Valida que el producto tenga collor y cantidad válidos
+    if (color === '-- Seleccionar Color --' || isNaN(cantidad) || cantidad <= 0) {
+      alert('Por favor, selecciona un color y una cantidad válida.'); //Alerta si la validación falla
+      return;
+    }
+    
+    cartPopup.style.display = "block";
+    agregarCarrito({nombre, precio, color, cantidad}); // Agregar el producto al carrito
+
+  });
 });
 
 //SCRIPT FILTROS
 
 document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.querySelector(".filters-tittle");
-    const filtersContainer = document.querySelector(".filter_container");
+  const toggleButton = document.querySelector(".filters-tittle");
+  const filtersContainer = document.querySelector(".filter_container");
 
   //para que se desplieguen los filtros al darle al boton
-    toggleButton.addEventListener("click", () => {
-      filtersContainer.classList.toggle("hidden");
-      toggleButton.textContent = filtersContainer.classList.contains("hidden")
-        ? "Filtros"
-        : "Filtros";
-    });
+  toggleButton.addEventListener("click", () => {
+    filtersContainer.classList.toggle("hidden"); //Quita el hidden o lo añade del contenedor donde se encuentran los detalles de los pedidos.
   });
+});
 
 //filtrado por categorias
 document.addEventListener("DOMContentLoaded", function () {
-    const checkboxes = document.querySelectorAll(".filter-option");
-    const products = document.querySelectorAll(".producto");
-  
-    checkboxes.forEach((checkbox) => {
-      checkbox.addEventListener("change", filterProducts);
-    });
-  
-    function filterProducts() {
-      const selectedCategories = Array.from(checkboxes)
-        .filter((checkbox) => checkbox.checked)
-        .map((checkbox) => checkbox.value);
-  
-      products.forEach((product) => {
-        const category = product.getAttribute("data-category");
-        if (selectedCategories.length === 0 || selectedCategories.includes(category)) {
-          product.style.display = "block"; // Mostrar producto
-        } else {
-          product.style.display = "none"; // Ocultar producto
-        }
-      });
-    }
+  const checkboxes = document.querySelectorAll(".filter-option");
+  const products = document.querySelectorAll(".producto");
+
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", filterProducts);
   });
+
+  function filterProducts() {
+    const selectedCategories = Array.from(checkboxes)//aqui crea un array con las categorias del checkbox
+      .filter((checkbox) => checkbox.checked)//con esto filtramos las que estan seleccionadas
+      .map((checkbox) => checkbox.value);// y aqui crea un array con solamente las que hemos seleccionado usando map
+
+    products.forEach((product) => { //comenzamos a hacer un bucle recorriendo todos los productos
+      const category = product.getAttribute("data-category"); //guardamos la categoria
+      if (
+        selectedCategories.length === 0 || //si no hay ninguna seleccionada muestra todas
+        selectedCategories.includes(category) //si hay coincidencia muestra el producto y sino lo oculta
+      ) {
+        product.style.display = "block"; // Mostrar producto
+      } else {
+        product.style.display = "none"; // Ocultar producto
+      }
+    });
+  }
+});
 
 //filtrado por precio
   document.addEventListener("DOMContentLoaded", function () {
@@ -476,13 +657,13 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Actualiza el texto del precio al mover la barra
     priceRange.addEventListener("input", function () {
-      const selectedPrice = priceRange.value;
-      priceValue.textContent = `${selectedPrice}€`;
+      const selectedPrice = priceRange.value;//guardamos el valor seleccionado en la barra dentro de una variable
+      priceValue.textContent = `${selectedPrice}€`;//cambia el texto del precio de la barra 
   
       // Filtra los productos
-      products.forEach((product) => {
-        const productPrice = product.getAttribute("data-price");
-        if (productPrice === selectedPrice) {
+      products.forEach((product) => { //creamos un bucle esta vez para verificar los precios de los productos
+        const productPrice = product.getAttribute("data-price"); 
+        if (productPrice === selectedPrice) { //si hay coincidencia entre el valor guardado en variable de seleccion y el del producto
           product.style.display = "block"; // Muestra el producto
         } else {
           product.style.display = "none"; // Oculta el producto
@@ -491,96 +672,35 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-//NAHIA SCRIPT FIN
+  //popup rebajas
 
-//Volver arriba inicio
-document.addEventListener('DOMContentLoaded', function() {
-  const scrollToTopButton = document.getElementById('scrollToTop');
+document.addEventListener("DOMContentLoaded", () => {
+  const popupRebajas = document.getElementById("popupRebajas");
+  const closePopup = document.getElementById("rebajasclose");
 
-  // Mostrar/ocultar botón
-  window.addEventListener('scroll', function() {
-    if (window.pageYOffset > 300) {
-      scrollToTopButton.style.display = 'block';
-    } else {
-      scrollToTopButton.style.display = 'none';
-    }
+  // Mostrar el popup al cargar la página
+  popupRebajas.classList.add("visible");
+
+  // Cerrar el popup cuando se haga clic en la X
+  closePopup.addEventListener("click", () => {
+    popupRebajas.classList.remove("visible");
   });
-
-  // Scroll suave
-  scrollToTopButton.addEventListener('click', function() {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  });
-
-  // Ocultar inicialmente
-  scrollToTopButton.style.display = 'none';
 });
 
-//volver arriba fin
+  //script para la barra de NAVEGACION
+  document.addEventListener("DOMContentLoaded", () => {
+    const navegacion = document.querySelector(".navegacion");
+    const header = document.querySelector("header"); 
 
 
- // Inicializamos el carrito desde localStorage o vacío si no hay datos
-  let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-  const contenedorProductos = document.getElementById('contenedor-productos');
-  const cartItems = document.getElementById('cartItems');
-  const totalPrice = document.getElementById('totalPrice');
-  
-  // Función para agregar producto al carrito
-  function agregarAlCarrito(id, cantidad) {
-      const producto = productos.find(p => p.id === id);
-    if (!producto) {
-        console.error(`Producto con ID ${id} no encontrado`);
-        return;
+  window.addEventListener("scroll", () => {
+    if (window.scrollY >= header.offsetHeight) {
+      // Si se ha desplazado más allá del header, fija la navegación
+      navegacion.classList.add("fija");
+    } else {
+      // Si está antes del header, posición inicial
+      navegacion.classList.remove("fija");
     }
-  
-    // Verificar si el producto ya está en el carrito
-      const productoEnCarrito = carrito.find(p => p.id === id);
-      if (productoEnCarrito) {
-          productoEnCarrito.cantidad += cantidad;
-          productoEnCarrito.subtotal = productoEnCarrito.cantidad * parseFloat(producto.precio.replace('€', ''));
-      } else {
-          carrito.push({
-            id: producto.id,
-            titulo: producto.titulo,
-            precio: parseFloat(producto.precio.replace('€', '')),
-              cantidad: cantidad,
-              subtotal: cantidad * parseFloat(producto.precio.replace('€', '')),
-          });
-      }
-
-      actualizarCarrito();
-  }
-  
-  // Función para actualizar el carrito
-  function actualizarCarrito() {
-      cartItems.innerHTML = '';
-      carrito.forEach(producto => {
-          const li = document.createElement('li');
-          li.textContent = `${producto.titulo} x${producto.cantidad} - ${producto.subtotal.toFixed(2)}€`;
-          cartItems.appendChild(li);
-      });
-  
-    // Actualizar el total
-      const total = carrito.reduce((sum, p) => sum + p.subtotal, 0);
-      totalPrice.textContent = `${total.toFixed(2)}€`;
-  
-    // Guardar el carrito actualizado en localStorage
-      localStorage.setItem('carrito', JSON.stringify(carrito));
-  }
-  
-// Event listener para capturar clics en los botones de "Agregar al Carrito"
-  contenedorProductos.addEventListener('click', e => {
-      if (e.target.classList.contains('producto_submit')) {
-          const productoId = e.target.closest('.producto').dataset.id;
-        const cantidadInput = e.target.previousElementSibling;
-        const cantidad = parseInt(cantidadInput.value) || 1;
-
-          agregarAlCarrito(productoId, cantidad);
-      }
   });
-  
-// Inicializar el carrito en la interfaz
-  actualizarCarrito();
-  
+});
+

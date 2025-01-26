@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Illustre</title>
     <link rel="stylesheet" href="css/normalize.css">
     <link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/normalize.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="../fonts/imagenes/favicon.ico" type="imagen.ico">
-
+    <title>Checkout</title>
 </head>
+
 <body>
     <header class="header">
         <div class="lema">PETITE TOUCHE</div>
@@ -21,8 +21,6 @@
         </a>
         
         <div class="lema2">BELLES HISTOIRES</div>
-  
-      
         <div class="header-right">
        
             <div class="language-selector">
@@ -79,108 +77,70 @@
     </nav> 
         <main class="contenedor">
           <div id="dateTimeDisplay">Cargando...</div>
-  <div class="container">
-   <!--imagen usuario-->
-    <div class="profile">
-      <h2>Mi Cuenta</h2>
-         <img id="profile-picture" src="../fonts/Imagenes/user.jpeg" alt="Foto de perfil">
-            <h2 id="username-display">Nombre usuario</h2>
-            <input type="file" id="upload-photo" accept="image/*">
-        <button id="save-photo" class="button">Guardar Foto</button>
-     </div>
-     <!--datos de ususario-->     
-    <section class="section personal-info">
-       <h3>Datos Personales</h3>
-         <form id="edit-form">
-              <label for="name">Nombre:</label>
-              <input type="text" id="name" name="name" value="" required><br>
-          
-              <label for="email">Email:</label>
-              <input type="email" id="email" name="email" value="" required><br>
-          
-              <label for="phone">Teléfono:</label>
-              <input type="tel" id="phone" name="phone" value="" required><br>
-          
-          <button type="submit" class="button">Guardar Cambios</button>
-       </form>
-    </section>
-       <!--cambio contraseña-->   
-    <section class="section change-password">
-       <h3>Cambiar Contraseña</h3>
-          <form id="password-form">
-              <label for="current-password">Contraseña Actual:</label>
-              <input type="password" id="current-password" name="current-password" required autocomplete="current-password"><br>
-          
-              <label for="new-password">Nueva Contraseña:</label>
-              <input type="password" id="new-password" name="new-password" required autocomplete="new-password"><br>
-          
-              <label for="confirm-password">Confirmar Contraseña:</label>
-              <input type="password" id="confirm-password" name="confirm-password" required autocomplete="new-password"><br>
-          
-            <button type="submit" class="button">Actualizar Contraseña</button>
-         </form>
-     </section>
-        <!--historial de pedidos-->
-     <section class="section orders">
-      <h3>Historial de Pedidos</h3>
-            <ul>
-              <li class="order">
-                <div class="order-summary">
-                  <strong>Pedido #12345</strong>
-                  <p>Fecha: 12/01/2025</p>
-                  <p>Estado: Pendiente</p>
-                  <button class="toggle-details">Ver detalles</button>
-                </div>
-                <div class="order-details" style="display: none;">
-                  <p><strong>Producto:</strong> Pendientes Palmier</p>
-                  <p><strong>Cantidad:</strong> 2</p>
-                  <p><strong>Total:</strong> 24€</p>
-                </div>
-              </li>
-            </ul>
+  <div class="container"> 
 
-            <ul>
-              <li class="order">
-                <div class="order-summary">
-                  <strong>Pedido #12344</strong>
-                  <p>Fecha: 22/12/2024</p>
-                  <p>Estado: Entregado</p>
-                  <button class="toggle-details">Ver detalles</button>
-                </div>
-                <div class="order-details" style="display: none;">
-                  <p><strong>Producto:</strong> Collar Tusy perlas</p>
-                  <p><strong>Cantidad:</strong> 2</p>
-                  <p><strong>Total:</strong> 24€</p>
-                </div>
-              </li>
-            </ul>
+    <form action="checkout">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" placeholder="Nombre" name="nombre" required>
+    
+        <label for="apellido">Apellido</label>
+        <input type="text" id="apellido" placeholder="Apellido" name="apellido" required>
+    
+        <label for="email">Email</label>
+        <input type="email" placeholder="Email" id="email" name="email" required>
+    
+        <label for="telefono">Teléfono</label>
+        <input type="tel" placeholder="Teléfono" id="telefono" name="telefono" required>
+    
+        <label for="direccion">Dirección</label>
+        <input type="text" name="direccion" id="direccion" required>
+    
+        <div>
+            <p>Método de pago:</p>
+            <div class="metodoPago">
+                <input type="radio" id="tarjeta" name="metodoPago" value="tarjeta">
+                <label for="tarjeta">Tarjeta</label>
+                <input type="radio" id="paypal" name="metodoPago" value="paypal">
+                <label for="paypal">PayPal</label>
+            </div>
+        </div>
+    
+        <div id="datosTarjeta" style="display:none;">
+            <div class="numeroTarjeta">
+            <label for="numeroTarjeta">Número de Tarjeta</label>
+            <input type="text" id="numeroTarjeta" name="numeroTarjeta" placeholder="1234 5678 9012 3456">
+        </div>
+        <div class="fechaExpiracion">
+            <label for="fechaExpiracion">Fecha de Expiración</label>
+            <input type="text" id="fechaExpiracion" name="fechaExpiracion" placeholder="MM/AA">
+        </div>
 
-            <ul>
-              <li class="order">
-                <div class="order-summary">
-                  <strong>Pedido #12343</strong>
-                  <p>Fecha: 20/11/2024</p>
-                  <p>Estado: Entregado</p>
-                  <button class="toggle-details">Ver detalles</button>
-                </div>
-                <div class="order-details" style="display: none;">
-                  <p><strong>Producto:</strong> Pendientes Baldosas Bilbao</p>
-                  <p><strong>Cantidad:</strong> 3</p>
-                  <p><strong>Total:</strong> 36€</p>
-                </div>
-            </li>
-        </ul>
-    </section>
+        <div class="Cvv">
+            <label for="cvv">CVV</label>
+            <input type="text" id="cvv" placeholder=" 257" name="cvv">
+        </div>
+    </div>
+        <button type="submit">Realizar Pago</button>
+    </form>
+    
 
-      <!--boton cerrar sesion-->   
-    <section class="section options">
-      <h3>Opciones</h3>
-        <button id="logout-button" class="button logout">Cerrar sesión</button>
-   </section>
-   </div>
-  </main>
+    <script>
+    document.getElementById('tarjeta').addEventListener('change', function() {
+        document.getElementById('datosTarjeta').style.display = this.checked ? 'block' : 'none';
+    });
+    
+    document.getElementById('paypal').addEventListener('change', function(event) {
+    event.preventDefault();
+    window.location.href = 'https://www.paypal.com/checkout';
+});
+    </script>
+    
 
- <!--footer-->
+  
+     </div>   
+    
+  </div>
+</main>
     <footer class="footer">
         <div class="footer__contenedor">
             <div class="footer__seccion">
@@ -197,7 +157,7 @@
             <div class="footer__seccion">
                 <h3 class="footer__titulo">Contacto</h3>
                 <p class="footer__texto"><i class="fas fa-phone"></i> +34 634 567 890</p>
-                <p class="footer__texto"><i class="fas fa-envelope"></i> info@quintessence.com</p>
+                <p class="footer__texto"><i class="fas fa-envelope"></i> info@quintessence</p>
             </div>
             <div class="footer__seccion">
                 <h3 class="footer__titulo">Dirección</h3>
@@ -206,10 +166,7 @@
         </div>
         <p class="footer__derechos" data-translate="derechos">Todos los derechos Reservados © 2025</p>
     </footer>
-    <button class="scroll-top-btn" id="scrollTopBtn">
-      <i class="fas fa-chevron-up"></i>
-    </button>
-    <script src="../js/flecha.js"></script>
-   <script src="../js/script.js"></script>
+      <script src="../js/flecha.js"></script>
+<script src="../js/script.js"></script>
 </body>
 </html>
